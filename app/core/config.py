@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     JWT_SECRET: str 
     JWT_ALGORITHM: str 
-    TOKEN_EXPIRE_MINUTES: int 
+    ACCESS_TOKEN_EXPIRE_MINUTES: int 
 
     OPENROUTER_API_KEY: str
     OPENROUTER_BASE_URL: str 

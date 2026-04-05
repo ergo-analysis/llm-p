@@ -1,14 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.db.models import User
-from app.schemas.user import UserPublic
-from app.schemas.auth import UserRole
 
 class UserRepository:
     def __init__(self, db: AsyncSession):
         self._db = db
 
-"""def _to_response(self, user: User) -> UserPublic:
+    """def _to_response(self, user: User) -> UserPublic:
         return UserPublic(
             id=user.id,
             email=user.email,
@@ -28,7 +26,7 @@ class UserRepository:
         #    return None
         return user #self._to_response(user)
 
-    async def create(self, email, password_hash) -> UserPublic:
+    async def create(self, email, password_hash) -> User:
         user = User(
             email=email,
             password_hash=password_hash,
@@ -36,4 +34,5 @@ class UserRepository:
         self._db.add(user)
         await self._db.commit()
         await self._db.refresh(user)
-        return self._to_response(user)
+        added_user = await self.get_by_email(email)
+        return added_user

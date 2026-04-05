@@ -3,12 +3,16 @@ from app.core.errors import ConflictError, UnauthorizedError, NotFoundError
 from app.repositories.users import UserRepository
 from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse
 from app.schemas.user import UserPublic
+from app.db.models import User
  
 
 class AuthUsecase:
-    def __init__(self, storage: UserRepository):
+    def __init__(self, storage: UserRepository) -> None:
         self._storage = storage
 
+    #подсмотрел у препода на лекции, удобно 
+    def _public_response(self, data: User) -> UserPublic:
+        return UserPublic.model_validate(data)
 
     async def register(self, data: RegisterRequest) -> UserPublic:
 
@@ -18,7 +22,7 @@ class AuthUsecase:
 
         hashed = _hash_password(data.password)
         user = await self._storage.create(data.email, hashed)
-        return user
+        return self._public_response(user)
 
 
     async def login(self, data: LoginRequest) -> TokenResponse:
@@ -39,5 +43,5 @@ class AuthUsecase:
         user = await self._storage.get_by_id(user_id)
         if not user:
             raise NotFoundError("Пользователь не найден")
-        return user
+        return self._public_response(user)
     

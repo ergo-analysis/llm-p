@@ -22,19 +22,20 @@ class ChatMessageRepository:
 
     async def get_last_messages(self, user_id: int, limit: int = 10) -> list[ChatMessage]:
 
-        messages = await self._session.scalar(
+        messages = await self._session.scalars(
             select(ChatMessage)
             .where(ChatMessage.user_id == user_id)
             .order_by(ChatMessage.created_at.desc())
             .limit(limit)).all()
 
-        return list(messages)
+        return messages
 
 
     async def delete_user_history(self, user_id: int) -> None:
 
         await self._session.execute(
-            delete(ChatMessage).where(ChatMessage.user_id == user_id))
+            delete(ChatMessage)
+            .where(ChatMessage.user_id == user_id))
         
         await self._session.commit()
         

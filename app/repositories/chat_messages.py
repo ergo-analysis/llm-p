@@ -20,7 +20,7 @@ class ChatMessageRepository:
         return message
 
 
-    async def get_last_messages(self, user_id: int, limit: int = 10) -> list[ChatMessage]:
+    async def get_last_messages(self, user_id: int, limit: int | None = 10 ) -> list[ChatMessage]:
 
         messages = await self._session.scalars(
             select(ChatMessage)
@@ -28,7 +28,7 @@ class ChatMessageRepository:
             .order_by(ChatMessage.created_at.desc())
             .limit(limit)).all()
 
-        return messages
+        return messages[::-1] #тут надо развернуть, будет от последнего -9 до последнего
 
 
     async def delete_user_history(self, user_id: int) -> None:

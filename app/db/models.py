@@ -23,7 +23,7 @@ class ChatMessage(Base):
 
     __tablename__ = "messages"
     
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     #мб добавить схему?
     role: Mapped[str] = mapped_column(String(50), nullable=False) 

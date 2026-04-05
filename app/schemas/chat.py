@@ -9,3 +9,11 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     answer: str
+
+class DialogMessage(BaseModel):
+    role: str
+    content: str
+    created_at: str
+
+    model_config = {"from_attributes": True}
+

@@ -19,9 +19,10 @@ class Database:
             class_=AsyncSession,
             autoflush=False,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False
+            )
 
-    def _build_url():
+    def _build_url(self):
         return get_database_url()
     
     def get_session(self):

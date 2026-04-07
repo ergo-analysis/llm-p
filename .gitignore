@@ -1,6 +1,7 @@
 .python-version
 .env
-# Python-generated files
+app.db
+
 __pycache__/
 *.py[oc]
 build/
@@ -8,6 +9,5 @@ dist/
 wheels/
 *.egg-info
 
-# Virtual environments
 .venv
 

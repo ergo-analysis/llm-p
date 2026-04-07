@@ -34,5 +34,4 @@ class UserRepository:
         self._db.add(user)
         await self._db.commit()
         await self._db.refresh(user)
-        added_user = await self.get_by_email(email)
-        return added_user
+        return user

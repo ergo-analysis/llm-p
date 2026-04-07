@@ -27,7 +27,7 @@ class ChatUseCase:
 
         await self.storage.add_message(user_id, "assistant", answer)
 
-        return ChatResponse(answer)
+        return ChatResponse(answer=answer)
 
     async def get_history(self, user_id: int, limit: int | None = None) -> list[DialogMessage]:
         messages = await self.storage.get_last_messages(user_id, limit=limit)

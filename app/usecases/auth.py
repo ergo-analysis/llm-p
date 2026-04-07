@@ -6,7 +6,7 @@ from app.schemas.user import UserPublic
 from app.db.models import User
  
 
-class AuthUsecase:
+class AuthUseCase:
     def __init__(self, storage: UserRepository) -> None:
         self._storage = storage
 
@@ -25,12 +25,12 @@ class AuthUsecase:
         return self._public_response(user)
 
 
-    async def login(self, data: LoginRequest) -> TokenResponse:
+    async def login(self, username: str, password: str) -> TokenResponse:
 
-        user = await self._storage.get_by_email(data.username)
+        user = await self._storage.get_by_email(username)
         if not user:
             raise UnauthorizedError("Неверный email или пароль")
-        if not _verify_password(data.password, user.password_hash):
+        if not _verify_password(password, user.password_hash):
             raise UnauthorizedError("Неверный email или пароль")
 
         payload = {"sub": str(user.id), "role": user.role}

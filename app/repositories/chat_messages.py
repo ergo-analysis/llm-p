@@ -3,8 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import ChatMessage
 
 class ChatMessageRepository:
-    def __init__(self, session: AsyncSession):
-        self._session = session
+    def __init__(self, db: AsyncSession):
+        self._db = db
 
 
     async def add_message(self, user_id: int, role: str, content: str) -> ChatMessage:
@@ -14,28 +14,30 @@ class ChatMessageRepository:
             role=role,
             content=content,
         )
-        self._session.add(message)
-        await self._session.commit()
-        await self._session.refresh(message)
+        self._db.add(message)
+        await self._db.commit()
+        await self._db.refresh(message)
         return message
 
 
     async def get_last_messages(self, user_id: int, limit: int | None = 10 ) -> list[ChatMessage]:
 
-        messages = await self._session.scalars(
+        result = await self._db.scalars(
             select(ChatMessage)
             .where(ChatMessage.user_id == user_id)
             .order_by(ChatMessage.created_at.desc())
-            .limit(limit)).all()
+            .limit(limit))
+            
+        messages = result.all()
 
-        return messages[::-1] #тут надо развернуть, будет от последнего -9 до последнего
+        return messages[::-1] #тут надо развернуть, будет от последнего-9 до последнего
 
 
     async def delete_user_history(self, user_id: int) -> None:
 
-        await self._session.execute(
+        await self._db.execute(
             delete(ChatMessage)
             .where(ChatMessage.user_id == user_id))
         
-        await self._session.commit()
+        await self._db.commit()
         

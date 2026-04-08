@@ -15,7 +15,12 @@ async def chat(
     request: ChatRequest,
     user_id: UserIdDep,
     chat_usecase: ChatUseCaseDep,
-):
+) -> ChatResponse:
+    """
+    Отправляет запрос к LLM.
+    Возвращает ответ.
+    Сохраняет историю в бд.
+    """
     try:
         response = await chat_usecase.ask(user_id, request)
         return response
@@ -27,7 +32,9 @@ async def get_history(
     user_id: UserIdDep,
     chat_usecase: ChatUseCaseDep,
     limit: Optional[int] = Query(10, description="Количество последних сообщений"),
-):
+    ) -> list[DialogMessage]:
+    """Возвращает последние limit сообщений диалога"""
+
     messages = await chat_usecase.get_history(user_id, limit)
     return messages
 
@@ -35,6 +42,7 @@ async def get_history(
 async def clear_history(
     user_id: UserIdDep,
     chat_usecase: ChatUseCaseDep,
-):
+    ):
+    """Удаляет историю диалога"""
     await chat_usecase.clear_history(user_id)
     return None

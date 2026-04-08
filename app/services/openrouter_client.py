@@ -3,6 +3,7 @@ from app.core.config import settings
 from app.core.errors import ExternalServiceError
 
 class OpenRouterClient:
+    """Клиент для работы с OpenRouter API"""
     def __init__(self):
         self.base_url = settings.OPENROUTER_BASE_URL
         self.api_key = settings.OPENROUTER_API_KEY
@@ -11,7 +12,7 @@ class OpenRouterClient:
         self.app_name = settings.OPENROUTER_APP_NAME
 
     async def chat_completion(self, messages: list[dict], temperature: float = 0.7) -> str:
-
+        """Отправка запроса к OpenRouter"""
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",

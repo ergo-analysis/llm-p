@@ -2,7 +2,6 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.auth import RegisterRequest, TokenResponse
 from app.schemas.user import UserPublic
@@ -23,7 +22,7 @@ async def register(
     data: RegisterRequest,
     auth_usecase: AuthUseCaseDep,
 ) -> UserPublic:
-    
+    """Регистрация нового пользователя с email и паролем"""
     try:
         user = await auth_usecase.register(data)
         return user
@@ -35,6 +34,7 @@ async def login(
     data: OAuthDep,
     auth_usecase: AuthUseCaseDep
 ) -> TokenResponse:
+    """Логин по email и паролю, возвращает JWT токен"""
     try:
         token_response = await auth_usecase.login(data.username, data.password)
         return token_response
@@ -46,6 +46,7 @@ async def get_me(
     auth_usecase: AuthUseCaseDep,
     user_id: int = Depends(get_current_user_id),
 ) -> UserPublic:
+    """Возвращает публичную информацию текущего пользователя"""
     try:
         return await auth_usecase.get_profile(user_id)
     except NotFoundError as e:

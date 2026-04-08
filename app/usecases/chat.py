@@ -4,12 +4,17 @@ from app.schemas.chat import ChatResponse, ChatRequest, DialogMessage
 
 
 class ChatUseCase:
+    """Логика общения с LLM"""
     def __init__(self, storage: ChatMessageRepository, llm_client: OpenRouterClient) -> None:
         self.storage = storage
         self.llm_client = llm_client
 
     async def ask(self, user_id: int, data: ChatRequest) -> ChatResponse:
-
+        """
+        Отправляет запрос к LLM.
+        Возвращает ответ.
+        Отправляет историю в бд.
+        """
         messages = []
 
         if data.system:
@@ -30,11 +35,12 @@ class ChatUseCase:
         return ChatResponse(answer=answer)
 
     async def get_history(self, user_id: int, limit: int | None = None) -> list[DialogMessage]:
+        """Возвращает последние limit сообщений диалога, по умолчанию вернет все"""
         messages = await self.storage.get_last_messages(user_id, limit=limit)
         dialog = [DialogMessage.model_validate(message) for message in messages]
 
         return dialog #мб добавить реверс списка, чтоб читать от поздних к ранним?
 
     async def clear_history(self, user_id: int) -> None:
+        """Удаляет историю диалога"""
         await self.storage.delete_user_history(user_id)
-

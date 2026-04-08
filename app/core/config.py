@@ -1,11 +1,11 @@
 from typing import Optional
 from pathlib import Path
-from pydantic import Field, PositiveInt
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Settings(BaseSettings):
+    """Настройки приложения"""
     model_config = SettingsConfigDict(
         env_file=".env", #BASE_DIR / ".env"
         env_prefix="",
@@ -31,4 +31,5 @@ class Settings(BaseSettings):
 settings = Settings()
 
 def get_database_url() -> str:
+    """Формирует URL для подключения к БД"""
     return f"sqlite+aiosqlite:///{settings.SQLITE_PATH}"

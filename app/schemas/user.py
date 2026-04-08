@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
 class UserPublic(BaseModel):
+    """Публичная информация о пользователе"""
     id: int
     email: EmailStr
     role: str

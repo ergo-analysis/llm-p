@@ -17,18 +17,22 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 DbDep = Annotated[AsyncSession, Depends(get_db)]
 
 async def get_openrouter_client() -> OpenRouterClient:
+    """Получает клиент OpenRouter"""
     return OpenRouterClient()
 
 async def get_auth_usecase(db: DbDep) -> AuthUseCase:
+    """Получает usecase аутентификации"""
     return AuthUseCase(UserRepository(db=db))
 
 async def get_chat_usecase(
         db: DbDep, 
         llm_client: OpenRouterClient = Depends(get_openrouter_client)
         ) -> ChatUseCase:
+    """Получает usecase чата"""
     return ChatUseCase(ChatMessageRepository(db=db), llm_client=llm_client)
 
 async def get_current_user_id(token: str = Depends(oauth2_scheme)) -> int:
+    """Получает ID текущего пользователя из JWT токена"""
     try:
         payload = decode_access_token(token)
         user_id = payload.get("sub")

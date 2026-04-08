@@ -33,6 +33,7 @@ engine = db.engine
 SessionLocal = db.SessionLocal
 
 async def get_db() -> Generator[AsyncSession, None, None]:
+    """Генератор сессий"""
     async with SessionLocal() as session:
         try:
             yield session

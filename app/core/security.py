@@ -8,13 +8,15 @@ from app.core.config import settings
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def _hash_password(password: str) -> str:
+    """Хеширует пароль"""
     return pwd_context.hash(password)
 
 def _verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Проверяет пароль"""
     return pwd_context.verify(plain_password, hashed_password)
 
 def create_access_token(data: dict, expires_minutes: int | None = None) -> str:
-
+    """Создает JWT токен"""
     to_encode = data.copy()
     ttl_minutes = expires_minutes or settings.ACCESS_TOKEN_EXPIRE_MINUTES
     expire = datetime.now(timezone.utc) + timedelta(minutes=ttl_minutes)
@@ -25,7 +27,7 @@ def create_access_token(data: dict, expires_minutes: int | None = None) -> str:
     return jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
 
 def decode_access_token(token: str) -> dict:
-
+    """Верифицирует JWT токен"""
     try:
         payload = jwt.decode(
             token,
@@ -39,3 +41,4 @@ def decode_access_token(token: str) -> dict:
 
     except JWTError as e:
         raise ValueError("Некорректный токен") from e
+    

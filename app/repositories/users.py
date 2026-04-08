@@ -3,30 +3,22 @@ from sqlalchemy import select
 from app.db.models import User
 
 class UserRepository:
+    """Репозиторий пользователей"""
     def __init__(self, db: AsyncSession):
         self._db = db
 
-    """def _to_response(self, user: User) -> UserPublic:
-        return UserPublic(
-            id=user.id,
-            email=user.email,
-            role=user.role
-        )
-        """ #мб лишнее
-
     async def get_by_id(self, user_id: int) -> User | None:
+        """Получение пользователя по id"""
         user = await self._db.get(User, user_id)
-        #if user is None: проверка мб избыточна
-        #    return None 
-        return user #self._to_response(user)
+        return user 
 
     async def get_by_email(self, user_email: str) -> User | None:
+        """Получение пользователя по email"""
         user = await self._db.scalar(select(User).where(User.email == user_email)) 
-        #if user is None:
-        #    return None
-        return user #self._to_response(user)
+        return user 
 
     async def create(self, email, password_hash) -> User:
+        """Создание нового пользователя"""
         user = User(
             email=email,
             password_hash=password_hash,
